@@ -4,7 +4,7 @@ resource "aws_security_group" "sg-webserver" {
   ingress {
     from_port = "${var.webserver_port}"
     protocol = "tcp"
-    to_port = "${var.webserver_port}}"
+    to_port = "${var.webserver_port}"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
@@ -13,7 +13,7 @@ resource "aws_security_group" "sg-webserver" {
     Owner = "jalzati@anomali.com"
     Department = "DevOps"
     Environment = "research"
-    ServerPort = "${var.webserver_port}}"
+    ServerPort = "${var.webserver_port}"
   }
 }
 
