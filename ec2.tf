@@ -30,10 +30,11 @@ resource "aws_instance" "webserver" {
       Department = "DevOps"
       Environment = "research"
     }
-
-    user_data = <<-EOF
-      #!/bin/bash
-      echo "<html><head><title>EHLO</title></head><body><center><h2>Hello World!!!</h2><center><hr><center>Powered by Terraform</center></body></html>" > index.html
-      nohup busybox httpd -f -p 8080 &
-    EOF
-  }
+  
+  user_data = <<-EOF
+#!/bin/bash
+echo "Hello, World" > index.html
+nohup busybox httpd -f -p 8080 &
+EOF
+  
+}
