@@ -6,8 +6,16 @@ resource "aws_security_group" "sg-webserver" {
     from_port = "${var.webserver_port}"
     protocol = "tcp"
     to_port = "${var.webserver_port}"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["${var.vpnip}"]
     description = "Allow HTTP connections from anywhere in the Internet"
+  }
+
+  ingress {
+    from_port = 443
+    protocol = "tcp"
+    to_port = 443
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow HTTPS connections from only the VPN server"
   }
 
   ingress {
@@ -18,6 +26,13 @@ resource "aws_security_group" "sg-webserver" {
     description = "Allow SSH connections from only the VPN server"
   }
 
+  egress {
+    from_port = 0
+    protocol = "-1"
+    to_port = 0
+    description = "Allow outbound traffic"
+  }
+
   tags {
     Name = "Web Server Security Group"
     Owner = "jalzati@anomali.com"
@@ -26,18 +41,18 @@ resource "aws_security_group" "sg-webserver" {
   }
 }
 
-resource "aws_eip" "dev_elasticip" {
-  vpc = true
-  count = "${var.nwebservers}"
-  instance = "${element(aws_instance.webserver.*.id,count.index)}"
+#resource "aws_eip" "dev_elasticip" {
+#  vpc = true
+#  count = "${var.nwebservers}"
+#  instance = "${element(aws_instance.webserver.*.id,count.index)}"
 
-  tags {
-    Name = "webserver-${count.index}"
-    Owner = "${var.owner}"
-    Department = "${var.department}"
-    Environment = "${var.environment}"
-  }
-}
+#  tags {
+#    Name = "webserver-${count.index}"
+#    Owner = "${var.owner}"
+#    Department = "${var.department}"
+#    Environment = "${var.environment}"
+#  }
+#}
 
 resource "aws_key_pair" "webserver_keypair" {
   key_name   = "${var.keyname}"
@@ -51,7 +66,7 @@ resource "aws_instance" "webserver" {
   vpc_security_group_ids = ["${aws_security_group.sg-webserver.id}"]
   count = "${var.nwebservers}"
   key_name = "${var.keyname}"
-  subnet_id = "${aws_subnet.webserver_public_subnet_3.id}"
+  subnet_id = "${aws_subnet.webserver_public_subnet_1.id}"
 
     tags {
       Name = "webserver-${count.index}"
@@ -60,10 +75,13 @@ resource "aws_instance" "webserver" {
       Environment = "research"
     }
   
-  user_data = <<EOF
-#!/bin/bash
-echo "Hello, World" > index.html
-nohup busybox httpd -f -p 8080 &
-EOF
+#user_data =<<EOF
+##! /bin/bash
+#sudo apt-get update
+#sudo apt-get install -y apache2
+#sudo systemctl start apache2
+#sudo systemctl enable apache2
+#echo "<h1>Deployed via Terraform</h1>" | sudo tee /var/www/html/index.html
+#EOF
 
 }

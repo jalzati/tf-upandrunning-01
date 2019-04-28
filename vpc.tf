@@ -73,34 +73,6 @@ resource "aws_subnet" "webserver_public_subnet_2" {
   }
 }
 
-resource "aws_subnet" "webserver_public_subnet_3" {
-  cidr_block = "${var.subnet_cidrs[2]}"
-  vpc_id = "${aws_vpc.webserver_vpc.id}"
-  map_public_ip_on_launch = true
-  availability_zone = "${data.aws_availability_zones.available_azs.names[0]}"
-
-  tags {
-    Owner = "${var.owner}"
-    Department = "${var.department}"
-    Environment = "${var.environment}"
-    Name = "Webserver Public3 Subnet"
-  }
-}
-
-resource "aws_subnet" "webserver_public_subnet_4" {
-  cidr_block = "${var.subnet_cidrs[3]}"
-  vpc_id = "${aws_vpc.webserver_vpc.id}"
-  map_public_ip_on_launch = true
-  availability_zone = "${data.aws_availability_zones.available_azs.names[1]}"
-
-  tags {
-    Owner = "${var.owner}"
-    Department = "${var.department}"
-    Environment = "${var.environment}"
-    Name = "Webserver Public4 Subnet"
-  }
-}
-
 #RT Associations
 resource "aws_route_table_association" "public1_assoc" {
   subnet_id = "${aws_subnet.webserver_public_subnet_1.id}"
@@ -109,15 +81,5 @@ resource "aws_route_table_association" "public1_assoc" {
 
 resource "aws_route_table_association" "public2_assoc" {
   subnet_id = "${aws_subnet.webserver_public_subnet_2.id}"
-  route_table_id = "${aws_route_table.webserver_public_rt.id}"
-}
-
-resource "aws_route_table_association" "public3_assoc" {
-  subnet_id = "${aws_subnet.webserver_public_subnet_3.id}"
-  route_table_id = "${aws_route_table.webserver_public_rt.id}"
-}
-
-resource "aws_route_table_association" "public4_assoc" {
-  subnet_id = "${aws_subnet.webserver_public_subnet_4.id}"
   route_table_id = "${aws_route_table.webserver_public_rt.id}"
 }
