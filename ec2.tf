@@ -11,14 +11,6 @@ resource "aws_security_group" "sg-webserver" {
   }
 
   ingress {
-    from_port = 443
-    protocol = "tcp"
-    to_port = 443
-    cidr_blocks = ["0.0.0.0/0"]
-    description = "Allow HTTPS connections from only the VPN server"
-  }
-
-  ingress {
     from_port = 22
     protocol = "tcp"
     to_port = 22
@@ -39,10 +31,6 @@ resource "aws_security_group" "sg-webserver" {
     Owner = "jalzati@anomali.com"
     Department = "DevOps"
     Environment = "research"
-  }
-
-  lifecycle {
-    create_before_destroy = true
   }
 }
 
@@ -67,6 +55,5 @@ resource "aws_instance" "webserver" {
     }
   
   user_data = "${file("install_apache.sh")}"
-
 }
 
