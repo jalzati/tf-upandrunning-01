@@ -40,20 +40,11 @@ resource "aws_security_group" "sg-webserver" {
     Department = "DevOps"
     Environment = "research"
   }
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
-
-#resource "aws_eip" "dev_elasticip" {
-#  vpc = true
-#  count = "${var.nwebservers}"
-#  instance = "${element(aws_instance.webserver.*.id,count.index)}"
-
-#  tags {
-#    Name = "webserver-${count.index}"
-#    Owner = "${var.owner}"
-#    Department = "${var.department}"
-#    Environment = "${var.environment}"
-#  }
-#}
 
 resource "aws_key_pair" "webserver_keypair" {
   key_name   = "${var.keyname}"
@@ -65,16 +56,17 @@ resource "aws_instance" "webserver" {
   ami = "${var.ami}"
   instance_type = "${var.ec2type}"
   vpc_security_group_ids = ["${aws_security_group.sg-webserver.id}"]
-  count = "${var.nwebservers}"
   key_name = "${var.keyname}"
   subnet_id = "${aws_subnet.webserver_public_subnet_1.id}"
 
     tags {
-      Name = "webserver-${count.index}"
+      Name = "Webserver"
       Owner = "jalzati@anomali.com"
       Department = "DevOps"
       Environment = "research"
     }
   
   user_data = "${file("install_apache.sh")}"
+
 }
+

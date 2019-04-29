@@ -38,10 +38,6 @@ variable "ec2type" {
   description = "Type of EC2 instance for the web servers"
 }
 
-variable "nwebservers" {
-  description = "Number of web servers that will be created"
-}
-
 variable "vpc_cidr" {
   description = "Address space assigned to this VPC"
 }
